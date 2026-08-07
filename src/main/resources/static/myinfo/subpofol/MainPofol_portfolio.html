@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MainPofol AI Architecture Portfolio</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #18211d;
+            --muted: #607069;
+            --line: #dbe5df;
+            --paper: #f6f8f4;
+            --surface: #ffffff;
+            --surface-strong: #eef4ef;
+            --accent: #146b5a;
+            --accent-strong: #0e4f44;
+            --warm: #c4603f;
+            --blue: #315f8c;
+            --shadow: 0 18px 52px rgba(24, 33, 29, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+            line-height: 1.62;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            min-height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+            padding: 14px clamp(20px, 5vw, 72px);
+            background: rgba(246, 248, 244, 0.92);
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(14px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 850;
+            letter-spacing: 0;
+        }
+
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .nav a {
+            padding: 8px 10px;
+            border-radius: 8px;
+        }
+
+        .nav a:hover {
+            background: var(--surface-strong);
+            color: var(--ink);
+        }
+
+        .hero {
+            min-height: 88vh;
+            display: grid;
+            align-items: center;
+            padding: clamp(42px, 7vw, 84px) clamp(20px, 5vw, 72px) 34px;
+        }
+
+        .hero-inner {
+            width: min(1160px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(360px, 0.88fr);
+            gap: clamp(30px, 5vw, 64px);
+            align-items: center;
+        }
+
+        .eyebrow {
+            margin: 0 0 12px;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        h1 {
+            margin: 0;
+            max-width: 760px;
+            font-size: clamp(42px, 7vw, 82px);
+            line-height: 1.02;
+            letter-spacing: 0;
+        }
+
+        .hero-copy {
+            max-width: 720px;
+            margin: 22px 0 0;
+            color: var(--muted);
+            font-size: clamp(16px, 2vw, 19px);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .button {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 0 15px;
+            background: var(--surface);
+            font-weight: 750;
+            box-shadow: 0 8px 24px rgba(24, 33, 29, 0.08);
+        }
+
+        .button.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #ffffff;
+        }
+
+        .hero-panel {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--line);
+            background: var(--surface-strong);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 850;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #30a46c;
+            box-shadow: 0 0 0 5px rgba(48, 164, 108, 0.13);
+        }
+
+        .flow-preview {
+            padding: 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .flow-card {
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #ffffff;
+            padding: 13px;
+        }
+
+        .flow-icon {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: #e4f0eb;
+            color: var(--accent-strong);
+            font-weight: 850;
+        }
+
+        .flow-name {
+            font-weight: 850;
+            line-height: 1.3;
+        }
+
+        .flow-meta {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        main {
+            width: min(1160px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        section {
+            scroll-margin-top: 88px;
+        }
+
+        .section {
+            padding: 72px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .section-head {
+            display: grid;
+            grid-template-columns: minmax(0, 0.78fr) minmax(280px, 0.62fr);
+            gap: 28px;
+            align-items: end;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: clamp(28px, 4vw, 44px);
+            line-height: 1.12;
+            letter-spacing: 0;
+        }
+
+        .section-head p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .metric-grid,
+        .feature-grid,
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .metric,
+        .feature,
+        .stack-card,
+        .endpoint,
+        .decision {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            padding: 18px;
+            box-shadow: 0 10px 28px rgba(24, 33, 29, 0.06);
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 30px;
+            line-height: 1.1;
+            color: var(--accent-strong);
+        }
+
+        .metric span,
+        .feature p,
+        .stack-card p,
+        .decision p,
+        .endpoint p {
+            color: var(--muted);
+        }
+
+        .feature h3,
+        .stack-card h3,
+        .decision h3,
+        .endpoint h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+            line-height: 1.3;
+        }
+
+        .feature p,
+        .stack-card p,
+        .decision p,
+        .endpoint p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .architecture {
+            display: grid;
+            gap: 12px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .arch-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .arch-node {
+            min-height: 104px;
+            display: grid;
+            align-content: start;
+            gap: 6px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #fbfcfa;
+            padding: 14px;
+        }
+
+        .arch-node.emphasis {
+            background: #e7f2ed;
+            border-color: #b8d7ca;
+        }
+
+        .arch-node strong {
+            font-size: 15px;
+            line-height: 1.3;
+        }
+
+        .arch-node span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .arch-arrow {
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            font-weight: 900;
+        }
+
+        .process {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .step {
+            position: relative;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            padding: 16px;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 850;
+            margin-bottom: 12px;
+        }
+
+        .step h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            line-height: 1.3;
+        }
+
+        .step p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .endpoint-list,
+        .decision-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface-strong);
+            padding: 5px 8px;
+            color: var(--accent-strong);
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .footer {
+            padding: 28px 0 46px;
+            color: var(--muted);
+            border-top: 1px solid var(--line);
+            font-size: 14px;
+        }
+
+        @media (max-width: 920px) {
+            .hero-inner,
+            .section-head {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                min-height: auto;
+            }
+
+            .metric-grid,
+            .feature-grid,
+            .stack-grid,
+            .endpoint-list,
+            .decision-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .arch-row,
+            .process {
+                grid-template-columns: 1fr;
+            }
+
+            .arch-arrow {
+                min-height: 18px;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 2px;
+            }
+
+            main {
+                width: min(100% - 28px, 1160px);
+            }
+        }
+    
+        .portfolio-description {
+            border-top: 1px solid var(--line);
+        }
+
+        .description-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--surface);
+            padding: clamp(18px, 3vw, 28px);
+            box-shadow: 0 10px 28px rgba(24, 33, 29, 0.06);
+        }
+
+        .description-card h3 {
+            margin: 24px 0 10px;
+            font-size: 20px;
+            line-height: 1.35;
+        }
+
+        .description-card h3:first-child {
+            margin-top: 0;
+        }
+
+        .description-card h4 {
+            margin: 18px 0 8px;
+            font-size: 16px;
+            color: var(--accent-strong);
+        }
+
+        .description-card p,
+        .description-card li {
+            color: var(--muted);
+        }
+
+        .description-card ul {
+            margin: 0 0 16px;
+            padding-left: 22px;
+        }
+
+        .description-card li + li {
+            margin-top: 7px;
+        }
+
+        .description-card code {
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--surface-strong, #eef4ef);
+            padding: 1px 5px;
+            color: var(--accent-strong);
+            font-size: 0.92em;
+        }
+    </style>
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="#top" aria-label="MainPofol AI">
+        <span class="brand-mark">AI</span>
+        <span>MainPofol AI</span>
+    </a>
+    <nav class="nav" aria-label="페이지 이동">
+        <a href="#overview">개요</a>
+        <a href="#architecture">아키텍처</a>
+        <a href="#flow">AI 흐름</a>
+        <a href="#api">API</a>
+        <a href="#stack">기술</a>
+    </nav>
+</header>
+
+<div id="top" class="hero">
+    <div class="hero-inner">
+        <div>
+            <p class="eyebrow">Spring AI 기반 개인 포트폴리오 Q&A 서비스</p>
+            <h1>MainPofol Portfolio</h1>
+            <p class="hero-copy">
+                정적 포트폴리오 문서를 지식 기반으로 사용하고, OpenAI Chat API를 통해 질문 의도에 맞는 문서를 선별한 뒤
+                답변을 생성하는 개인 정보 탐색형 AI 서비스입니다.
+            </p>
+            <div class="hero-actions">
+                <a class="button primary" href="/">메인 화면</a>
+                <a class="button" href="/myinfo/subpofol/AllyaZoom_portpolio.html">AllyaZoom 포트폴리오도 보러가기</a>
+            </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="핵심 처리 흐름">
+            <div class="panel-top">
+                <div class="panel-title">Runtime Pipeline</div>
+                <div class="status-dot" aria-hidden="true"></div>
+            </div>
+            <div class="flow-preview">
+                <div class="flow-card">
+                    <div class="flow-icon">01</div>
+                    <div>
+                        <div class="flow-name">질문 접수</div>
+                        <div class="flow-meta">React UI, NDJSON progress stream</div>
+                    </div>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-icon">02</div>
+                    <div>
+                        <div class="flow-name">문서 선택</div>
+                        <div class="flow-meta">checklist.md 기반 1차 OpenAI 호출</div>
+                    </div>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-icon">03</div>
+                    <div>
+                        <div class="flow-name">근거 답변 생성</div>
+                        <div class="flow-meta">선택된 Markdown 문서만 사용</div>
+                    </div>
+                </div>
+                <div class="flow-card">
+                    <div class="flow-icon">04</div>
+                    <div>
+                        <div class="flow-name">후처리</div>
+                        <div class="flow-meta">질문 이력 저장, Telegram 알림</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<main>
+    <section id="overview" class="section">
+        <div class="section-head">
+            <h2>프로젝트 개요</h2>
+            <p>
+                단순 챗봇이 아니라, 관리 가능한 Markdown 문서와 추천 질문 DB를 결합한 개인 포트폴리오 질의응답 시스템입니다.
+                사용자 화면, 관리자 화면, AI 처리, 방문 통계, 알림 후처리를 하나의 Spring Boot 애플리케이션 안에 구성했습니다.
+            </p>
+        </div>
+        <div class="metric-grid">
+            <div class="metric">
+                <strong>2-step</strong>
+                <span>문서 선별 후 답변 생성으로 토큰 사용과 근거 범위를 제어</span>
+            </div>
+            <div class="metric">
+                <strong>Async</strong>
+                <span>GPT 요청과 후처리를 분리해 다중 사용자 요청 처리</span>
+            </div>
+            <div class="metric">
+                <strong>Admin</strong>
+                <span>문서, 추천 질문, 질문 이력, 방문 통계를 관리하는 운영 화면</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="section">
+        <div class="section-head">
+            <h2>시스템 아키텍처</h2>
+            <p>
+                프론트엔드는 정적 React UMD 앱으로 제공하고, 백엔드는 Spring WebMVC, Spring Security, Spring Data JPA,
+                Spring AI OpenAI 연동으로 구성했습니다.
+            </p>
+        </div>
+        <div class="architecture">
+            <div class="arch-row">
+                <div class="arch-node emphasis">
+                    <strong>Client Browser</strong>
+                    <span>index.html, app.js, app.css</span>
+                    <span>채팅, 추천 질문, 관리자 UI</span>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node emphasis">
+                    <strong>Spring WebMVC</strong>
+                    <span>/api/ask, /api/myinfo/**</span>
+                    <span>NDJSON progress streaming</span>
+                </div>
+                <div class="arch-node">
+                    <strong>Spring Security</strong>
+                    <span>JWT filter, stateless session</span>
+                    <span>/api/admin/** 보호</span>
+                </div>
+            </div>
+            <div class="arch-row">
+                <div class="arch-node">
+                    <strong>MyInfoAiService</strong>
+                    <span>질문 처리 오케스트레이션</span>
+                    <span>OpenAI 호출 예외 변환</span>
+                </div>
+                <div class="arch-node">
+                    <strong>Document Services</strong>
+                    <span>checklist.md 파싱</span>
+                    <span>선택 문서 로드</span>
+                </div>
+                <div class="arch-node emphasis">
+                    <strong>OpenAI Chat API</strong>
+                    <span>문서 선택용 호출</span>
+                    <span>최종 답변 생성용 호출</span>
+                </div>
+                <div class="arch-node">
+                    <strong>Async Executors</strong>
+                    <span>myinfo-ai-: 질문 처리</span>
+                    <span>myinfo-post-: 저장/알림</span>
+                </div>
+            </div>
+            <div class="arch-row">
+                <div class="arch-node">
+                    <strong>MySQL</strong>
+                    <span>질문 이력</span>
+                    <span>추천 질문, 방문 로그</span>
+                </div>
+                <div class="arch-node">
+                    <strong>Admin APIs</strong>
+                    <span>문서 CRUD</span>
+                    <span>추천 질문/이력 관리</span>
+                </div>
+                <div class="arch-node">
+                    <strong>Telegram</strong>
+                    <span>질문과 답변 알림</span>
+                    <span>실패해도 메인 응답과 분리</span>
+                </div>
+                <div class="arch-node">
+                    <strong>Static Knowledge</strong>
+                    <span>resources/static/myinfo/*.md</span>
+                    <span>포트폴리오 지식 베이스</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="flow" class="section">
+        <div class="section-head">
+            <h2>AI 답변 생성 흐름</h2>
+            <p>
+                질문마다 전체 문서를 무조건 넣지 않고, 먼저 checklist 기반으로 관련 문서를 고릅니다.
+                이후 선택된 문서만 근거로 답변하게 해 환각 가능성과 불필요한 토큰 사용을 줄였습니다.
+            </p>
+        </div>
+        <div class="process">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>질문 수신</h3>
+                <p>사용자 질문을 검증하고 progress 응답을 시작합니다.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>목차 로드</h3>
+                <p>checklist.md에서 참조 가능한 Markdown 파일 목록을 추출합니다.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>문서 선택</h3>
+                <p>OpenAI가 질문과 연관된 파일명을 JSON 형태로 반환합니다.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>답변 생성</h3>
+                <p>선택 문서 본문만 기반으로 한국어 답변을 생성합니다.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">5</div>
+                <h3>저장과 알림</h3>
+                <p>질문 이력 저장과 Telegram 전송을 별도 executor에서 처리합니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="api" class="section">
+        <div class="section-head">
+            <h2>주요 API와 기능</h2>
+            <p>
+                사용자 공개 API와 관리자 전용 API를 분리하고, 관리자 기능은 JWT 기반 stateless 인증으로 보호했습니다.
+            </p>
+        </div>
+        <div class="endpoint-list">
+            <div class="endpoint">
+                <h3>POST /api/ask</h3>
+                <p>일반 질문 API입니다. CompletableFuture 응답으로 질문 처리를 AI executor에 위임합니다.</p>
+                <div class="tag-list">
+                    <span class="tag">OpenAI</span>
+                    <span class="tag">Async</span>
+                    <span class="tag">DTO Response</span>
+                </div>
+            </div>
+            <div class="endpoint">
+                <h3>POST /api/ask/progress</h3>
+                <p>진행 상태를 application/x-ndjson으로 스트리밍하고, 완료 시 최종 답변을 반환합니다.</p>
+                <div class="tag-list">
+                    <span class="tag">StreamingResponseBody</span>
+                    <span class="tag">NDJSON</span>
+                </div>
+            </div>
+            <div class="endpoint">
+                <h3>GET /api/myinfo/recommended-questions</h3>
+                <p>관리자가 등록한 추천 질문 목록과 저장된 답변을 사용자 화면에 제공합니다.</p>
+                <div class="tag-list">
+                    <span class="tag">Recommended Q&A</span>
+                    <span class="tag">JPA</span>
+                </div>
+            </div>
+            <div class="endpoint">
+                <h3>/api/admin/**</h3>
+                <p>질문 이력, 추천 질문, Markdown 문서, 방문 통계 대시보드를 관리합니다.</p>
+                <div class="tag-list">
+                    <span class="tag">JWT</span>
+                    <span class="tag">Admin</span>
+                    <span class="tag">CRUD</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stack" class="section">
+        <div class="section-head">
+            <h2>기술 스택</h2>
+            <p>
+                Java 21 기반 Spring Boot 애플리케이션에 정적 React 화면을 얹고, MySQL과 OpenAI API를 연결했습니다.
+            </p>
+        </div>
+        <div class="stack-grid">
+            <div class="stack-card">
+                <h3>Backend</h3>
+                <p>Java 21, Spring Boot 4.1, Spring WebMVC, Validation, Lombok</p>
+            </div>
+            <div class="stack-card">
+                <h3>AI</h3>
+                <p>Spring AI OpenAI starter, gpt-5-mini 기본 모델, 2단계 프롬프트 파이프라인</p>
+            </div>
+            <div class="stack-card">
+                <h3>Persistence</h3>
+                <p>Spring Data JPA, Hibernate, MySQL, JSON converter 기반 selectedFiles 저장</p>
+            </div>
+            <div class="stack-card">
+                <h3>Frontend</h3>
+                <p>정적 HTML, React 18 UMD, Babel standalone, CSS responsive layout</p>
+            </div>
+            <div class="stack-card">
+                <h3>Security</h3>
+                <p>Spring Security, JWT 인증 필터, 관리자 API 권한 분리</p>
+            </div>
+            <div class="stack-card">
+                <h3>Operations</h3>
+                <p>방문 통계, 관리자 대시보드, Telegram 알림, 비동기 후처리</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-head">
+            <h2>설계 포인트</h2>
+            <p>
+                운영 가능한 작은 AI 서비스를 목표로, 지식 소스 관리, 비용 제어, 응답 추적, 관리자 운영 흐름을 함께 설계했습니다.
+            </p>
+        </div>
+        <div class="decision-grid">
+            <div class="decision">
+                <h3>문서 기반 답변 제한</h3>
+                <p>AI가 선택된 Markdown 내용만 근거로 답변하도록 프롬프트를 구성해, 포트폴리오 외 정보 추측을 줄였습니다.</p>
+            </div>
+            <div class="decision">
+                <h3>요청 단위 비동기 처리</h3>
+                <p>여러 클라이언트의 질문이 같은 컨트롤러 스레드를 오래 점유하지 않도록 AI executor를 분리했습니다.</p>
+            </div>
+            <div class="decision">
+                <h3>후처리 장애 격리</h3>
+                <p>질문 이력 저장과 Telegram 전송은 별도 async service에서 처리하고 실패 로그만 남겨 사용자 응답과 분리했습니다.</p>
+            </div>
+            <div class="decision">
+                <h3>관리자 중심 운영</h3>
+                <p>추천 질문과 문서를 관리자 화면에서 직접 관리해 배포 없이 지식 베이스와 노출 질문을 조정할 수 있습니다.</p>
+            </div>
+        </div>
+    </section>
+    <!-- portfolio-description:start -->
+    <section class="section portfolio-description" aria-labelledby="portfolio-description-title">
+        <div class="section-head">
+            <h2 id="portfolio-description-title">MainPofol 프로젝트 설명</h2>
+            <p>MainPofol.md 내용을 포트폴리오 하단에 정리했습니다.</p>
+        </div>
+        <div class="description-card">
+            <h3>개발 계기</h3>
+            <ul>
+                <li>구직자는 인사담당자가 어떤 정보를 원할지 생각 안하고 그냥 본인의 정보를 다 때려넣으면 되고</li>
+                <li>인사담당자는 필요한것만 뽑아서 볼수 있으면 서로 편하겠다 싶어서 제작함</li>
+                <li>겸사겸사 포트폴리오로도 씀</li>
+            </ul>
+            <h3>개발과정</h3>
+            <ul>
+                <li>너무 간단한 프로젝트라 개발과정이라 할게 없음</li>
+            </ul>
+            <h3>발생했던 문제와 해결</h3>
+            <ul>
+                <li>질문 입력 후 답변 받기까지 너무 오래걸림 -&gt; 후처리작업등을 비동기로 빼서 답변 반환부터함</li>
+                <li>그래도 오래걸림 GPT API 자체가 오래걸림 -&gt; 임베딩모델을 쓰던가 임베딩API를 사용하면 되겠지만 현재는 그정도 성능이 필요없어 이대로 유지함</li>
+            </ul>
+            <h3>예상되는 문제와 예상해결방법</h3>
+            <h4>재사용성 미구현중</h4>
+            <ul>
+                <li>질문 내용을 저장하고있으나 새로운 질문시 같은 질문에 대한 답변을 재사용하지않음</li>
+                <li>질문 카테고리를 준비하고 GPT api 호출시 카테고리도 선택하게하여 카테고리와 함께 저장하고</li>
+                <li>GPT api 카테고리별 질문리스트와 함께 제공하여 같은 질문이 판단될시 해당 질문으로 답변하고 따로 저장하지않는 방법이 있음</li>
+                <li>토큰 아까우면 카테고리 + 키워드로 입력토큰 줄일 수 있음</li>
+                <li>임베딩작업으로 하면 성능,비용 더 줄일 수 있음</li>
+            </ul>
+            <h3>코덱스를 사용하여 만들었지만 제대로 이해하지 못한 부분</h3>
+            <ul>
+                <li>프론트엔드는 최소한의 디자인 수정만 가능한 정도라 대부분 코덱스에게 맡김</li>
+                <li>미들웨어 필터선에서 행해지는 시큐리티 작업은 큰 흐름만 알고있고 디테일한 작업은 학습이 부족한 상태임</li>
+                <li>도커,AWS는 아직 미흡하여 조금 더 다뤄봐야함</li>
+            </ul>
+        </div>
+    </section>
+    <!-- portfolio-description:end -->
+    <footer class="footer">
+        MainPofol AI Architecture Portfolio · Spring Boot, Spring AI, MySQL, React static UI
+    </footer>
+</main>
+</body>
+</html>
