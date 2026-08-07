@@ -15,10 +15,12 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 ENV TZ=Asia/Seoul
+ENV MYINFO_DOCUMENT_DIRECTORY=/app/myinfo
 
 RUN useradd --system --create-home --uid 1001 spring
 
 COPY --from=build /workspace/build/libs/*.jar app.jar
+COPY --chown=1001:1001 src/main/resources/static/myinfo /app/myinfo
 
 USER spring
 

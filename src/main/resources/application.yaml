@@ -39,6 +39,9 @@ jwt:
   secret: ${JWT_SECRET:}
   expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
 
+myinfo:
+  document-directory: ${MYINFO_DOCUMENT_DIRECTORY:src/main/resources/static/myinfo}
+
 logging:
   level:
     com.example.mainpofol.myinfo.service.MyInfoAiService: INFO

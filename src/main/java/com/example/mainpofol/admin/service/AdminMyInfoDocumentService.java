@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,14 +23,18 @@ import org.springframework.web.server.ResponseStatusException;
 public class AdminMyInfoDocumentService {
 
     private static final String CHECKLIST_FILE_NAME = "checklist.md";
-    private static final Path MYINFO_DIRECTORY = Paths.get("src/main/resources/static/myinfo")
-            .toAbsolutePath()
-            .normalize();
+    private final Path myInfoDirectory;
+
+    public AdminMyInfoDocumentService(
+            @Value("${myinfo.document-directory:src/main/resources/static/myinfo}") String documentDirectory
+    ) {
+        this.myInfoDirectory = Paths.get(documentDirectory).toAbsolutePath().normalize();
+    }
 
     public List<MyInfoDocumentResponse> findAll() {
         try {
             ensureDirectory();
-            return Files.list(MYINFO_DIRECTORY)
+            return Files.list(myInfoDirectory)
                     .filter(Files::isRegularFile)
                     .filter(path -> path.getFileName().toString().endsWith(".md"))
                     .sorted(Comparator.comparing(path -> path.getFileName().toString()))
@@ -129,14 +134,14 @@ public class AdminMyInfoDocumentService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid markdown file name.");
         }
 
-        Path path = MYINFO_DIRECTORY.resolve(fileName).normalize();
-        if (!path.startsWith(MYINFO_DIRECTORY)) {
+        Path path = myInfoDirectory.resolve(fileName).normalize();
+        if (!path.startsWith(myInfoDirectory)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid markdown file path.");
         }
         return path;
     }
 
     private void ensureDirectory() throws IOException {
-        Files.createDirectories(MYINFO_DIRECTORY);
+        Files.createDirectories(myInfoDirectory);
     }
 }

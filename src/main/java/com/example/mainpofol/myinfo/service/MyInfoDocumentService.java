@@ -4,10 +4,13 @@ import com.example.mainpofol.global.error.CustomException;
 import com.example.mainpofol.global.error.ErrorCode;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class MyInfoDocumentService {
     private static final Pattern CHECKLIST_LINK_PATTERN = Pattern.compile("\\]\\(\\./([^)]*\\.md)\\)");
 
     private final ResourceLoader resourceLoader;
+
+    @Value("${myinfo.document-directory:src/main/resources/static/myinfo}")
+    private Path documentDirectory;
 
     public String loadChecklist() {
         return loadDocument("checklist.md");
@@ -46,6 +52,16 @@ public class MyInfoDocumentService {
     }
 
     private String loadDocument(String fileName) {
+        Path directory = documentDirectory.toAbsolutePath().normalize();
+        Path filePath = directory.resolve(fileName).normalize();
+        if (filePath.startsWith(directory) && Files.exists(filePath)) {
+            try {
+                return Files.readString(filePath, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.MYINFO_DOCUMENT_READ_FAILED, "문서를 읽을 수 없습니다: " + fileName, e);
+            }
+        }
+
         Resource resource = resourceLoader.getResource(MYINFO_PATH + fileName);
         if (!resource.exists()) {
             throw new CustomException(ErrorCode.MYINFO_DOCUMENT_NOT_FOUND, "문서를 찾을 수 없습니다: " + fileName);
