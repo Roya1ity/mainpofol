@@ -6,7 +6,9 @@ COPY gradlew gradlew.bat settings.gradle build.gradle ./
 COPY gradle ./gradle
 COPY src ./src
 
-RUN chmod +x ./gradlew && ./gradlew bootJar -x test --no-daemon
+ENV GRADLE_OPTS="-Dorg.gradle.jvmargs=-Xmx512m -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1"
+
+RUN chmod +x ./gradlew && ./gradlew bootJar -x test --no-daemon --max-workers=1
 
 FROM eclipse-temurin:21-jre
 
