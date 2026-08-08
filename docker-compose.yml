@@ -1,15 +1,28 @@
 services:
-  app:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: mainpofol-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${APP_PORT:-80}:80"
+    networks:
+      - frontend-net
+
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mainpofol-app
+    container_name: mainpofol-backend
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "${APP_PORT:-8095}:8095"
+    expose:
+      - "8095"
     environment:
       TZ: Asia/Seoul
       SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/${MYSQL_DATABASE:-mainpofol}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false"
@@ -22,6 +35,9 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_SECONDS: ${JWT_EXPIRATION_SECONDS:-3600}
+    networks:
+      - frontend-net
+      - backend-net
 
   db:
     image: mysql:8.4
@@ -47,6 +63,13 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
+    networks:
+      - backend-net
+
+networks:
+  frontend-net:
+  backend-net:
+    internal: true
 
 volumes:
   mysql-data:
