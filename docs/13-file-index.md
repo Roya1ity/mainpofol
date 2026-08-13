@@ -2,44 +2,69 @@
 
 ## 애플리케이션
 
-- `src/main/java/com/example/mainpofol/MainpofolApplication.java`
+- `src/main/java/com/example/myaicv/MyAiCvApplication.java`
 
 ## 설정
 
 - `src/main/resources/application.yaml`
-- `src/main/java/com/example/mainpofol/config/AsyncConfig.java`
-- `src/main/java/com/example/mainpofol/config/SecurityConfig.java`
+- `src/main/java/com/example/myaicv/config/AsyncConfig.java`
+- `src/main/java/com/example/myaicv/config/SecurityConfig.java`
 
-## Admin
+## Auth
 
-- `admin/controller/AdminAuthController.java`
-- `admin/controller/AdminMyInfoAskHistoryController.java`
-- `admin/controller/AdminMyInfoDocumentController.java`
-- `admin/controller/AdminMyInfoRecommendedQuestionController.java`
-- `admin/service/AdminAuthService.java`
-- `admin/service/AdminMyInfoAskHistoryService.java`
-- `admin/service/AdminMyInfoDocumentService.java`
-- `admin/service/AdminMyInfoRecommendedQuestionService.java`
-- `admin/repository/MyInfoRecommendedQuestionRepository.java`
-- `admin/dto/*`
+- `auth/controller/AuthController.java`
+- `auth/domain/AppUser.java`
+- `auth/domain/OAuthProvider.java`
+- `auth/domain/UserRole.java`
+- `auth/dto/AuthUserResponse.java`
+- `auth/repository/AppUserRepository.java`
+- `auth/service/AuthCookieService.java`
+- `auth/service/OAuthLoginSuccessHandler.java`
+- `auth/service/OAuthUserProvisionService.java`
 
-## MyInfo
+## MyInfo Public
 
 - `myinfo/controller/MyInfoAiController.java`
+- `myinfo/controller/MyInfoDocumentController.java`
 - `myinfo/controller/MyInfoRecommendedQuestionController.java`
+- `myinfo/controller/SiteVisitController.java`
 - `myinfo/service/MyInfoAiService.java`
 - `myinfo/service/MyInfoAskPostProcessService.java`
 - `myinfo/service/MyInfoDocumentService.java`
 - `myinfo/service/MyInfoSelectionParser.java`
 - `myinfo/service/MyInfoRecommendedQuestionService.java`
+- `myinfo/service/SiteVisitService.java`
 - `myinfo/repository/MyInfoAskHistoryRepository.java`
+- `myinfo/repository/SiteVisitRepository.java`
 - `myinfo/persistence/StringListJsonConverter.java`
 - `myinfo/dto/*`
+
+## Seeker
+
+- `seeker/controller/SeekerDashboardController.java`
+- `seeker/controller/SeekerMyInfoAskHistoryController.java`
+- `seeker/controller/SeekerMyInfoDocumentController.java`
+- `seeker/controller/SeekerMyInfoRecommendedQuestionController.java`
+- `seeker/service/SeekerMyInfoAskHistoryService.java`
+- `seeker/service/SeekerMyInfoDocumentService.java`
+- `seeker/service/SeekerMyInfoRecommendedQuestionService.java`
+- `seeker/repository/MyInfoRecommendedQuestionRepository.java`
+- `seeker/dto/*`
+
+## Resume
+
+- `resume/controller/ResumeApiController.java`
+- `resume/controller/ResumePageController.java`
+
+## Admin
+
+- `admin/controller/AdminMenuController.java`
 
 ## Global
 
 - `global/entity/MyInfoAskHistory.java`
 - `global/entity/MyInfoRecommendedQuestion.java`
+- `global/entity/SiteVisit.java`
 - `global/error/*`
 - `global/security/*`
 
@@ -51,23 +76,21 @@
 
 - `src/main/resources/static/myinfo/checklist.md`
 - `src/main/resources/static/myinfo/*.md`
+- `src/main/resources/static/myinfo/subpofol/*`
 
 ## Frontend
 
 - `src/main/resources/static/index.html`
 - `src/main/resources/static/app.css`
 - `src/main/resources/static/app.js`
-- `src/main/resources/static/favicon.svg`
-- `src/main/resources/static/favicon.ico`
-- `src/main/resources/static/favicon.png`
 
-프론트 기능:
+프론트엔드 주요 기능:
 
 - 공개 채팅 UI
-- 추천 질문 카드 슬라이더
-- 관리자 로그인 모달
-- 관리자 대시보드
-- 일자별/시간대별 방문자수 그래프
-- 질문 히스토리 관리
-- 추천 질문 DB 관리
+- 진행 상태 표시
+- 추천 질문 카드
+- OAuth 로그인 진입
+- 구직자 대시보드
+- 질문 이력 관리
+- 추천 질문 관리
 - MyInfo Markdown 문서 관리

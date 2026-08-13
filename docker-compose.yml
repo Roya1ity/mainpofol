@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: mainpofol-frontend
+    container_name: my-ai-cv-frontend
     restart: unless-stopped
     depends_on:
       - backend
@@ -16,7 +16,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mainpofol-backend
+    container_name: my-ai-cv-backend
     restart: unless-stopped
     depends_on:
       db:
@@ -25,32 +25,37 @@ services:
       - "8095"
     environment:
       TZ: Asia/Seoul
-      SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/${MYSQL_DATABASE:-mainpofol}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false"
-      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-mainpofol}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-mainpofol_password}
+      SPRING_DATASOURCE_URL: "jdbc:mysql://db:3306/${MYSQL_DATABASE:-myaicv}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false"
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-myaicv}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-myaicv_password}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-mini}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRATION_SECONDS: ${JWT_EXPIRATION_SECONDS:-3600}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID:-}
+      KAKAO_CLIENT_SECRET: ${KAKAO_CLIENT_SECRET:-}
     networks:
       - frontend-net
       - backend-net
 
   db:
     image: mysql:8.4
-    container_name: mainpofol-db
+    container_name: my-ai-cv-db
     restart: unless-stopped
     ports:
       - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
     environment:
       TZ: Asia/Seoul
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-mainpofol}
-      MYSQL_USER: ${DB_USERNAME:-mainpofol}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-mainpofol_password}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-mainpofol_root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-myaicv}
+      MYSQL_USER: ${DB_USERNAME:-myaicv}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-myaicv_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-myaicv_root_password}
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci

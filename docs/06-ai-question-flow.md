@@ -1,12 +1,12 @@
 # AI 질문 처리 흐름
 
-핵심 클래스:
+관련 클래스:
 
 - `MyInfoAiService`
 - `MyInfoAskPostProcessService`
 - `MyInfoDocumentService`
 - `MyInfoSelectionParser`
-- `AdminMyInfoAskHistoryService`
+- `SeekerMyInfoAskHistoryService`
 - `TelegramMessageService`
 
 ## 흐름
@@ -14,26 +14,28 @@
 ```text
 사용자 질문
   -> checklist.md 로드
-  -> 허용 문서 목록 추출
-  -> 진행 이벤트: 질문에 맞는 문서리스트 선별중..
+  -> 허용 문서 파일명 추출
+  -> progress: 질문에 맞는 문서 목록을 선별하고 있습니다.
   -> OpenAI 1차 호출: 관련 문서 선택
-  -> 선택 결과 파싱
+  -> 선택 결과 JSON 파싱
   -> 선택된 Markdown 문서 로드
-  -> 진행 이벤트: 선별된 문서를 기반으로 답변 생성중..
+  -> progress: 선별된 문서를 기반으로 답변을 생성하고 있습니다.
   -> OpenAI 2차 호출: 최종 답변 생성
   -> 비동기 후처리 요청
   -> API 응답 반환
 
 비동기 후처리
-  -> 질문 히스토리 저장
-  -> 텔레그램 발송
+  -> 질문 이력 저장
+  -> Telegram 알림 발송
 ```
 
 ## 문서 선택
 
-`MyInfoSelectionParser`는 OpenAI의 1차 응답에서 JSON을 추출한다.
+`MyInfoDocumentService.extractDocumentFileNames`는 `checklist.md`에서 `](./file.md)` 형식의 링크를 추출한다.
 
-예상 응답 구조:
+`MyInfoSelectionParser`는 OpenAI의 1차 응답에서 JSON 객체를 추출한다.
+
+예상 응답:
 
 ```json
 {
@@ -42,9 +44,18 @@
 }
 ```
 
-허용 문서 목록에 없는 파일은 저장하지 않는다.
+허용 문서 목록에 없는 파일은 무시한다. 선택 결과가 비어 있으면 허용 문서 중 앞의 2개를 fallback으로 사용한다.
 
-## 저장
+## 답변 생성
+
+최종 답변 프롬프트의 원칙:
+
+- 제공된 Markdown 문서 내용만 사용한다.
+- 문서에서 확인할 수 없으면 확인할 수 없다고 답한다.
+- 한국어로 답변한다.
+- 사용자에게 추가 문서를 요구하지 않는다.
+
+## 저장과 알림
 
 `MyInfoAiService`는 직접 Repository를 호출하지 않는다.
 
@@ -53,14 +64,14 @@
 ```text
 MyInfoAiService
   -> MyInfoAskPostProcessService.saveAndSendTelegram (@Async)
-  -> AdminMyInfoAskHistoryService.save
+  -> SeekerMyInfoAskHistoryService.save
   -> MyInfoAskHistoryRepository.save
 ```
 
-`MyInfoAiService`는 최종 답변 생성 후 DB 저장과 텔레그램 발송을 기다리지 않고 응답을 반환한다.
+질문 이력 저장 실패나 Telegram 전송 실패는 비동기 서비스에서 로깅하고 사용자 응답을 막지 않는다.
 
-## 주의
+## 비동기 설정
 
-- 후처리 executor는 `AsyncConfig.myInfoPostProcessExecutor`다.
-- 히스토리 저장 실패와 텔레그램 발송 실패는 비동기 서비스에서 로깅하고 사용자 응답을 막지 않는다.
-- 프롬프트를 수정할 때는 테스트 질문으로 문서 선택과 답변 품질을 검증한다.
+- AI 호출 executor: `AsyncConfig.myInfoAiExecutor`
+- 후처리 executor: `AsyncConfig.myInfoPostProcessExecutor`
+- Spring MVC async request timeout: `180000ms`
